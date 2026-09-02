@@ -1,0 +1,19 @@
+# Mini Proyecto 1 - Generacion de paletas de colores
+# Machine Learning No Supervisado - MaIA Semestre 2
+#
+# Instalacion:
+#   ~/.pyenv/versions/3.13.6/bin/python3 -m venv .venv
+#   .venv/bin/python -m pip install --upgrade pip setuptools wheel
+#   .venv/bin/pip install -r requirements.txt
+
+numpy>=2.1              # base numerica
+scipy>=1.14             # dependencia de sklearn y utilidades
+pandas>=2.2.3           # catalogo WikiArt y tablas de resultados
+matplotlib>=3.9         # galeria, curvas, muestrarios, t-SNE
+pillow>=11.0            # lectura y redimensionado de imagenes
+scikit-learn>=1.6       # KMeans, MeanShift, GaussianMixture, TSNE, PCA, metricas, Pipeline
+scikit-image>=0.25      # rgb2lab / lab2rgb (conversion a CIELAB)
+kagglehub>=0.3          # descarga del dataset steubk/wikiart
+ipykernel>=6.29         # kernel del notebook
+jupyterlab>=4.2         # ejecucion del notebook fuera de VS Code
+nbconvert>=7.16         # entregable .html exigido por la rubrica

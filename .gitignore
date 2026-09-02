@@ -1,0 +1,15 @@
+# Entorno virtual (se reconstruye con requirements.txt)
+.venv/
+
+# Credenciales - nunca versionar
+kaggle.json
+.kaggle/
+.env
+
+# Artefactos de Python y Jupyter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Las imagenes y el catalogo SI se versionan: van en data/ para que el
+# notebook se pueda ejecutar sin credenciales de Kaggle ni descargas.
