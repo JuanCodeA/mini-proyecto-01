@@ -1,0 +1,3 @@
+# Dependencias del Mini Proyecto 2.
+# Se instalan sobre el entorno compartido de la raiz:
+#   ../.venv/bin/pip install -r requirements.txt
