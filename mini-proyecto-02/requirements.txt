@@ -1,0 +1,15 @@
+# Dependencias del Mini Proyecto 2 - Clasificacion de textos segun los ODS.
+# Se instalan sobre el entorno compartido de la raiz:
+#   ../.venv/bin/pip install -r requirements.txt
+
+# Ya presentes por el Mini Proyecto 1, se listan para que esta carpeta
+# sea autocontenida:
+numpy>=2.1
+pandas>=2.2.3
+matplotlib>=3.9
+scikit-learn>=1.6      # TfidfVectorizer, TruncatedSVD, LinearSVC, GridSearchCV
+
+# Propias de este proyecto:
+openpyxl>=3.1          # lectura del Datos_textosODS.xlsx
+nltk>=3.9              # stopwords en espanol y SnowballStemmer
+seaborn>=0.13          # matriz de confusion legible

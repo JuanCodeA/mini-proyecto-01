@@ -1,64 +1,45 @@
-# Generación de paletas de colores a partir de imágenes
+# Mini Proyectos — Machine Learning No Supervisado
 
-Mini Proyecto 1 — **Machine Learning No Supervisado**
-Maestría en Inteligencia Artificial, Semestre 2
+Maestría en Inteligencia Artificial, Semestre 2.
+Monorepositorio con los mini proyectos de la asignatura.
 
-Método que, dada la imagen de una obra de arte, extrae sus colores dominantes mediante
-agrupación y genera un muestrario representativo, **decidiendo por sí mismo cuántos grupos
-formar y con qué algoritmo**.
+## Proyectos
 
-## Qué hace
+| Carpeta | Proyecto | Estado |
+|---|---|---|
+| [`mini-proyecto-01/`](mini-proyecto-01/) | Generación de paletas de colores a partir de imágenes | Completo |
+| [`mini-proyecto-02/`](mini-proyecto-02/) | Por definir | Pendiente |
 
-```
-imagen → pipeline de preparación → agrupación con selección automática → paleta
-                                            │
-                                            └──→ proyección t-SNE de la nube de color
-```
+Cada carpeta es autocontenida: su notebook, sus dependencias y sus datos. El `README.md`
+de cada una explica cómo ejecutarla.
 
-- **Prepara** la imagen con un `Pipeline` de scikit-learn: RGB, redimensionado a 400 px
-  conservando la relación de aspecto, muestreo de píxeles y conversión a **CIELAB**, para que
-  la distancia euclidiana corresponda a la diferencia de color percibida.
-- **Compara tres algoritmos** —K-Means, Mean Shift y Gaussian Mixture— sobre 28 configuraciones
-  por imagen, y elige combinando un piso de fidelidad cromática (ΔE) con el consenso de
-  Silhouette, Davies-Bouldin y Calinski-Harabasz.
-- **Genera el muestrario** usando el medoide de cada grupo, fusionando colores redundantes y
-  ordenando por luminosidad.
-- **Verifica que generaliza** aplicando el método a cuatro géneros que no participaron en
-  ninguna decisión de diseño.
+## Entorno
 
-## Cómo ejecutarlo
+Los dos proyectos comparten un único entorno virtual en la raíz, para no duplicar
+instalaciones. Se crea una sola vez:
 
 ```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install --upgrade pip
-.venv/bin/pip install -r requirements.txt
+.venv/bin/pip install -r mini-proyecto-01/requirements.txt
 .venv/bin/python -m ipykernel install --user --name mini-proyecto \
     --display-name "Python (Mini-Proyecto)"
 ```
 
-Abre `mini-proyecto.ipynb`, selecciona el kernel **Python (Mini-Proyecto)** y ejecuta
-*Restart & Run All*.
+Cuando el proyecto 2 necesite librerías propias, se añaden a su `requirements.txt` y se
+instalan sobre el mismo entorno.
 
-**No hacen falta credenciales de Kaggle ni conexión a Internet.** El catálogo y las 24 imágenes
-que el notebook utiliza viajan en `data/`. El código conserva la descarga desde Kaggle como
-respaldo, por si se cambia la semilla o se añaden géneros nuevos.
+Requiere Python 3.13. Las versiones exactas de la ejecución de referencia del proyecto 1
+están en `mini-proyecto-01/requirements.lock.txt`.
 
-Requiere Python 3.13. Las versiones exactas con las que se ejecutó están en
-`requirements.lock.txt`.
+## Cómo ejecutar un notebook
 
-## Estructura
+Abre el `.ipynb` de la carpeta correspondiente y selecciona el kernel
+**Python (Mini-Proyecto)**. Las rutas de datos de cada notebook son **relativas a su propia
+carpeta**, así que hay que ejecutarlo desde ahí — que es lo que hacen Jupyter y VS Code por
+defecto. No hace falta ninguna descarga: los datos viajan en el repositorio.
 
-```
-mini-proyecto.ipynb     el método completo, documentado paso a paso
-mini-proyecto.html      exportación del notebook ya ejecutado
-requirements.txt        dependencias
-requirements.lock.txt   versiones exactas de la ejecución de referencia
-data/classes.csv        catálogo WikiArt (80.043 obras)
-data/imagenes/          las 24 obras usadas, en carpetas por género
-```
+## Integrantes
 
-## Datos
-
-Las imágenes provienen del conjunto [WikiArt](https://www.kaggle.com/datasets/steubk/wikiart)
-publicado en Kaggle por *steubk*, con licencia **CC0 (dominio público)**. Solo se incluyen las
-24 obras que el notebook analiza; el conjunto completo pesa 31,45 GB.
+- Juan Avendaño García
+- Leonardo Cano Uribe
