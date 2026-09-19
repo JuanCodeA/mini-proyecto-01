@@ -1,0 +1,18 @@
+# Dependencias de la aplicacion Streamlit.
+#
+# Streamlit Community Cloud busca el archivo de dependencias PRIMERO en el
+# directorio del punto de entrada y solo despues en la raiz del repositorio,
+# dando precedencia al primero. Por eso la app vive en su propia carpeta: asi
+# este archivo es el que se instala, y el requirements.txt del notebook -que
+# tiene rangos laxos y dependencias que la web no necesita- queda fuera.
+#
+# scikit-learn va CLAVADO porque el modelo se serializo con esa version exacta
+# (esta grabada en el .joblib). Cualquier otra dispara InconsistentVersionWarning
+# y, con un cambio mayor, impide reconstruir el pipeline.
+
+streamlit>=1.40,<2
+scikit-learn==1.9.0    # version exacta con la que se entreno el modelo
+joblib==1.5.3          # lector del .joblib
+numpy>=2.1,<3
+scipy>=1.14,<2
+nltk>=3.9,<4           # solo para reconstruir el SnowballStemmer del pickle

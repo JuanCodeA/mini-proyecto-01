@@ -4,6 +4,7 @@
 
 # Credenciales - nunca versionar
 kaggle.json
+.streamlit/secrets.toml
 .kaggle/
 .env
 
