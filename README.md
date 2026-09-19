@@ -8,7 +8,7 @@ Monorepositorio con los mini proyectos de la asignatura.
 | Carpeta | Proyecto | Estado |
 |---|---|---|
 | [`mini-proyecto-01/`](mini-proyecto-01/) | Generación de paletas de colores a partir de imágenes | Completo |
-| [`mini-proyecto-02/`](mini-proyecto-02/) | Por definir | Pendiente |
+| [`mini-proyecto-02/`](mini-proyecto-02/) | Clasificación de textos según los Objetivos de Desarrollo Sostenible | Completo |
 
 Cada carpeta es autocontenida: su notebook, sus dependencias y sus datos. El `README.md`
 de cada una explica cómo ejecutarla.
@@ -22,12 +22,13 @@ instalaciones. Se crea una sola vez:
 python3 -m venv .venv
 .venv/bin/python -m pip install --upgrade pip
 .venv/bin/pip install -r mini-proyecto-01/requirements.txt
+.venv/bin/pip install -r mini-proyecto-02/requirements.txt
 .venv/bin/python -m ipykernel install --user --name mini-proyecto \
     --display-name "Python (Mini-Proyecto)"
 ```
 
-Cuando el proyecto 2 necesite librerías propias, se añaden a su `requirements.txt` y se
-instalan sobre el mismo entorno.
+Cada proyecto declara sus dependencias en su propio `requirements.txt` y todas se instalan
+sobre el mismo entorno.
 
 Requiere Python 3.13. Las versiones exactas de la ejecución de referencia del proyecto 1
 están en `mini-proyecto-01/requirements.lock.txt`.
