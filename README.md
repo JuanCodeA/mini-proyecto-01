@@ -13,6 +13,10 @@ Monorepositorio con los mini proyectos de la asignatura.
 Cada carpeta es autocontenida: su notebook, sus dependencias y sus datos. El `README.md`
 de cada una explica cómo ejecutarla.
 
+El proyecto 2 va más allá del notebook: en [`mini-proyecto-02/app/`](mini-proyecto-02/app/)
+hay una aplicación en Streamlit que clasifica cualquier texto con el modelo ya entrenado,
+pensada para desplegarse en Streamlit Community Cloud.
+
 ## Entorno
 
 Los dos proyectos comparten un único entorno virtual en la raíz, para no duplicar
@@ -28,7 +32,9 @@ python3 -m venv .venv
 ```
 
 Cada proyecto declara sus dependencias en su propio `requirements.txt` y todas se instalan
-sobre el mismo entorno.
+sobre el mismo entorno. La aplicación web tiene además su
+`mini-proyecto-02/app/requirements.txt`, deliberadamente aparte: solo hace falta para
+ejecutarla o desplegarla.
 
 Requiere Python 3.13. Las versiones exactas de la ejecución de referencia del proyecto 1
 están en `mini-proyecto-01/requirements.lock.txt`.

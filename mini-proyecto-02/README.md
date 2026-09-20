@@ -62,6 +62,65 @@ modelo.predict(["En nuestra vereda el agua llega turbia y con mal olor."])
 El proceso que lo cargue necesita tener definidas `normalizar_token` y `NormalizadorTexto`:
 `joblib` guarda una referencia a la clase, no su código.
 
+Para no tener que redefinirlas a mano, `app/modelo_ods.py` ya las trae y resuelve la carga:
+
+```python
+import sys; sys.path.insert(0, "app")
+from modelo_ods import cargar_modelo, clasificar_texto
+
+modelo = cargar_modelo()
+clasificar_texto(modelo, "En nuestra vereda el agua llega turbia.")
+```
+
+## Aplicación web
+
+La carpeta `app/` contiene una interfaz en Streamlit donde se pega un texto y se obtiene el ODS
+asignado con sus tres candidatos.
+
+```bash
+../.venv/bin/pip install -r app/requirements.txt
+cd .. && .venv/bin/streamlit run mini-proyecto-02/app/streamlit_app.py
+```
+
+Se ejecuta **desde la raíz del repositorio**, que es como lo hace Streamlit Cloud.
+
+```
+app/streamlit_app.py    interfaz; es el punto de entrada del despliegue
+app/modelo_ods.py       la clase del pipeline, el cargador y la inferencia
+app/requirements.txt    dependencias del despliegue, con scikit-learn clavado
+```
+
+Tres decisiones que conviene conocer:
+
+- **`app/` es una carpeta aparte a propósito.** Streamlit Cloud busca el archivo de dependencias
+  primero en el directorio del punto de entrada y solo después en la raíz, y le da precedencia al
+  primero. Al aislar la app, el `requirements.txt` que se instala es el suyo y no el de este
+  proyecto, que tiene rangos laxos y arrastra matplotlib, seaborn y openpyxl.
+- **`scikit-learn` va clavado en `1.9.0`**, que es la versión con la que se serializó el modelo
+  —está grabada dentro del `.joblib`—. Con otra versión la carga avisa de inconsistencia y con un
+  cambio mayor deja de reconstruir el pipeline.
+- **`NormalizadorTexto` está duplicada**: en §2.3 del notebook y en `app/modelo_ods.py`. El
+  notebook es la fuente; si cambia allí hay que replicarlo aquí y regenerar el `.joblib`. La
+  alternativa —que el notebook importara del módulo— dejaría de mostrar el código en la celda,
+  que es parte del entregable.
+
+La aplicación no necesita `nltk_data/`: el modelo entrenado ya lleva dentro sus stopwords y su
+*stemmer*. Solo hace falta el paquete `nltk` instalado para que el `.joblib` pueda reconstruirlos.
+
+### Publicar en Streamlit Community Cloud
+
+En [share.streamlit.io](https://share.streamlit.io), *Create app* → desplegar desde GitHub:
+
+| Campo | Valor |
+|---|---|
+| Repository | `JuanCodeA/mini-proyecto-01` |
+| Branch | `master` |
+| Main file path | `mini-proyecto-02/app/streamlit_app.py` |
+| Python version (*Advanced settings*) | 3.12 o 3.13 |
+
+La versión de Python **no se puede cambiar después de desplegar**: habría que borrar la app y
+rehacerla. No sirve un `runtime.txt`, que Community Cloud ignora.
+
 ## Datos
 
 Subconjunto del **OSDG Community Dataset (OSDG-CD)** 2023, traducido al español con DeepL y
