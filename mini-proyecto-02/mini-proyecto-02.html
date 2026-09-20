@@ -7852,7 +7852,8 @@ a.anchor-link {
 </li>
 <li><a href="#seccion-7">Conclusiones</a></li>
 <li><a href="#seccion-8">Clasificación de textos nuevos</a></li>
-<li><a href="#seccion-9">Declaración de uso de IA generativa</a></li>
+<li><a href="#seccion-9">Bono: aplicación web</a></li>
+<li><a href="#seccion-10">Declaración de uso de IA generativa</a></li>
 </ol>
 </div>
 </div>
@@ -14433,14 +14434,58 @@ no lo resuelve.</p>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d98b7e56">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=8407dc00">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <p><a id="seccion-9"></a></p>
-<h1 id="9.-Declaraci%C3%B3n-de-uso-de-inteligencia-artificial-generativa">9. Declaración de uso de inteligencia artificial generativa<a class="anchor-link" href="#9.-Declaraci%C3%B3n-de-uso-de-inteligencia-artificial-generativa">¶</a></h1><p>Este proyecto se desarrolló con apoyo de un asistente de inteligencia artificial generativa
+<h1 id="9.-Bono:-aplicaci%C3%B3n-web">9. Bono: aplicación web<a class="anchor-link" href="#9.-Bono:-aplicaci%C3%B3n-web">¶</a></h1><p>El enunciado propone como bonificación llevar el clasificador a una aplicación donde cualquiera
+pueda escribir un texto y obtener el ODS que le corresponde, sin instalar nada ni ejecutar el
+notebook.</p>
+<h2 id="La-aplicaci%C3%B3n">La aplicación<a class="anchor-link" href="#La-aplicaci%C3%B3n">¶</a></h2><p>**<a href="https://mini-proyecto-01-hne87bx9idzdmk8ee8ecuu.streamlit.app/**">https://mini-proyecto-01-hne87bx9idzdmk8ee8ecuu.streamlit.app/**</a></p>
+<h2 id="Github">Github<a class="anchor-link" href="#Github">¶</a></h2><p>***<a href="https://github.com/JuanCodeA/mini-proyecto-01***">https://github.com/JuanCodeA/mini-proyecto-01***</a></p>
+<p>Está desplegada en <strong>Streamlit Community Cloud</strong>. Se abre en el navegador, se pega un texto en
+español y devuelve el objetivo asignado junto a los otros dos candidatos, con los mismos porcentajes
+y la misma advertencia sobre su interpretación que se explican en §8.</p>
+<p>La aplicación <strong>no reentrena nada</strong>: carga el <code>clasificador_ods.joblib</code> guardado en §8.4 y reutiliza
+la misma lógica de inferencia de §8. Se comprobó que devuelve exactamente los mismos resultados que
+este notebook sobre los cinco textos de prueba, incluidos los porcentajes.</p>
+<table>
+<thead>
+<tr>
+<th>Archivo</th>
+<th>Qué contiene</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>app/streamlit_app.py</code></td>
+<td>La interfaz: caja de texto, botón y resultado</td>
+</tr>
+<tr>
+<td><code>app/modelo_ods.py</code></td>
+<td>La clase del pipeline, el cargador y la inferencia</td>
+</tr>
+<tr>
+<td><code>app/requirements.txt</code></td>
+<td>Las dependencias del despliegue</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d98b7e56">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><a id="seccion-10"></a></p>
+<h1 id="10.-Declaraci%C3%B3n-de-uso-de-inteligencia-artificial-generativa">10. Declaración de uso de inteligencia artificial generativa<a class="anchor-link" href="#10.-Declaraci%C3%B3n-de-uso-de-inteligencia-artificial-generativa">¶</a></h1><p>Este proyecto se desarrolló con apoyo de un asistente de inteligencia artificial generativa
 (<strong>Claude</strong>, de Anthropic, a través de Claude Code). Se declara aquí su uso de forma explícita
 porque el alcance de esa ayuda <strong>no es uniforme a lo largo del notebook</strong>: va desde la revisión de
 código propio hasta una sección redactada por completo por la herramienta.</p>
