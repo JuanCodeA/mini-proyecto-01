@@ -85,14 +85,12 @@ cd .. && .venv/bin/streamlit run mini-proyecto-02/app/streamlit_app.py
 Se ejecuta **desde la raíz del repositorio**, que es como lo hace Streamlit Cloud.
 
 ```
-app/streamlit_app.py          interfaz; es el punto de entrada del despliegue
-app/modelo_ods.py             la clase del pipeline, el cargador y la inferencia
-app/estilos.css               las clases .ods-* de la tarjeta de resultado
-app/.streamlit/config.toml    el tema oscuro (archivo real; ver más abajo)
-app/requirements.txt          dependencias del despliegue, con scikit-learn clavado
+app/streamlit_app.py    interfaz; es el punto de entrada del despliegue
+app/modelo_ods.py       la clase del pipeline, el cargador y la inferencia
+app/requirements.txt    dependencias del despliegue, con scikit-learn clavado
 ```
 
-Seis decisiones que conviene conocer:
+Tres decisiones que conviene conocer:
 
 - **`app/` es una carpeta aparte a propósito.** Streamlit Cloud busca el archivo de dependencias
   primero en el directorio del punto de entrada y solo después en la raíz, y le da precedencia al
@@ -105,28 +103,6 @@ Seis decisiones que conviene conocer:
   notebook es la fuente; si cambia allí hay que replicarlo aquí y regenerar el `.joblib`. La
   alternativa —que el notebook importara del módulo— dejaría de mostrar el código en la celda,
   que es parte del entregable.
-- **El tema vive en `app/.streamlit/config.toml`, no en la raíz del repositorio.** Streamlit lee
-  *tres* `config.toml` —el global de `~/.streamlit`, el del directorio de trabajo y el de la carpeta
-  del script de entrada—, y el último gana a los otros dos. Como el punto de entrada es
-  `app/streamlit_app.py`, el config de `app/.streamlit/` se aplica sin depender del directorio desde
-  el que se ejecute: igual en local que en Streamlit Cloud, que arranca desde la raíz del
-  repositorio. Siendo esto un monorepo, así el tema pertenece a este mini proyecto y no al
-  repositorio entero, y `app/` queda como unidad de despliegue autocontenida —misma lógica que su
-  `requirements.txt`—. Conviene saber que la carpeta que cuenta es la del *script de entrada*: en
-  `mini-proyecto-02/.streamlit/` el config no se leería al ejecutar desde la raíz.
-- **Los colores oficiales de los ODS solo se usan como no-texto.**
-  El color del ODS aparece únicamente en el borde izquierdo de la tarjeta y en un punto indicador,
-  donde basta 3:1, y todo el texto usa tokens neutros. El chip de separación sube de calma a alarma
-  (neutro → ámbar tintado → ámbar sólido) en lugar de premiar el margen amplio con un verde, que
-  insinuaría acierto: §8.5 concluye que el margen no separa aciertos de errores.
-- **Los «términos que más pesaron» son atribuibles porque el clasificador lee la matriz TF-IDF
-  directamente.** El pipeline es `normalizar → vectorizar → clasificar`, así que cada coeficiente
-  del `LinearSVC` corresponde a un término y la contribución de cada uno se puede calcular. Si se
-  interpusiera un paso intermedio —un SVD, por ejemplo— dejarían de ser atribuibles, y
-  `terminos_influyentes` devuelve una lista vacía para que la interfaz omita la sección en lugar de
-  mostrar algo que no significa lo que parece. Los rasgos del TF-IDF son *raíces* (el vectorizador va
-  después del *stemming*), así que se remapean a las palabras tal como aparecen en el texto: se
-  muestra `planta tratamiento`, no `plant tratamient`.
 
 La aplicación no necesita `nltk_data/`: el modelo entrenado ya lleva dentro sus stopwords y su
 *stemmer*. Solo hace falta el paquete `nltk` instalado para que el `.joblib` pueda reconstruirlos.
