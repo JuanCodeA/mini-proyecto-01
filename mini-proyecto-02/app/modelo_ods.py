@@ -117,24 +117,37 @@ class NormalizadorTexto(BaseEstimator, TransformerMixin):
 # Nombres oficiales de los ODS. El modelo solo distingue 16: el corpus no cubre
 # el ODS 17, asi que nunca se predecira. Se conserva la entrada por completitud,
 # pero la interfaz debe recorrer modelo.classes_, no este diccionario.
+# Van acentuados a proposito, a diferencia del resto del modulo: no son codigo
+# sino el texto que se le muestra al usuario, y clasificar_texto los devuelve
+# tal cual en 'nombre'.
 NOMBRES_ODS = {
     1: "Fin de la pobreza",
     2: "Hambre cero",
     3: "Salud y bienestar",
-    4: "Educacion de calidad",
-    5: "Igualdad de genero",
+    4: "Educación de calidad",
+    5: "Igualdad de género",
     6: "Agua limpia y saneamiento",
-    7: "Energia asequible y no contaminante",
-    8: "Trabajo decente y crecimiento economico",
-    9: "Industria, innovacion e infraestructura",
-    10: "Reduccion de las desigualdades",
+    7: "Energía asequible y no contaminante",
+    8: "Trabajo decente y crecimiento económico",
+    9: "Industria, innovación e infraestructura",
+    10: "Reducción de las desigualdades",
     11: "Ciudades y comunidades sostenibles",
-    12: "Produccion y consumo responsables",
-    13: "Accion por el clima",
+    12: "Producción y consumo responsables",
+    13: "Acción por el clima",
     14: "Vida submarina",
     15: "Vida de ecosistemas terrestres",
-    16: "Paz, justicia e instituciones solidas",
+    16: "Paz, justicia e instituciones sólidas",
     17: "Alianzas para lograr los objetivos",
+}
+
+# Colores oficiales de la Agenda 2030. La interfaz los usa para que cada
+# resultado se reconozca por su ODS y no solo por el numero.
+COLORES_ODS = {
+    1: "#E5243B", 2: "#DDA63A", 3: "#4C9F38", 4: "#C5192D",
+    5: "#FF3A21", 6: "#26BDE2", 7: "#FCC30B", 8: "#A21942",
+    9: "#FD6925", 10: "#DD1367", 11: "#FD9D24", 12: "#BF8B2E",
+    13: "#3F7E44", 14: "#0A97D9", 15: "#56C02B", 16: "#00689D",
+    17: "#19486A",
 }
 
 # Margen: diferencia entre la puntuacion del ganador y la del segundo. Sirve
@@ -145,6 +158,11 @@ NOMBRES_ODS = {
 # fija bajo y se usa para avisar, nunca para rechazar. Los casos realmente
 # vacios (margen ~0,03) los ataja antes la comprobacion de vocabulario.
 MARGEN_MINIMO = 0.3
+
+# Segundo umbral, solo para graduar el aviso de la interfaz en tres niveles en
+# vez de dos. Por encima de el el ganador se despego con holgura del siguiente.
+# Insistiendo en lo de arriba: gradua SEPARACION, no correccion.
+MARGEN_FUERTE = 0.8
 
 
 def cargar_modelo(ruta=None):
@@ -263,3 +281,87 @@ def clasificar_texto(modelo, texto, n_top=3):
         "calibrado": es_probabilidad,
         "dudoso": margen < MARGEN_MINIMO,
     }
+
+
+def nivel_de_confianza(margen):
+    """Gradua la SEPARACION frente al segundo candidato: debil, media o fuerte.
+
+    No gradua la correccion. §8.5 concluye que el margen no separa aciertos de
+    errores en registro ciudadano -un error midio 0,75, por encima de dos
+    aciertos-, asi que estos niveles solo dicen cuanto se despego el ganador del
+    siguiente, nunca si acerto. La interfaz debe redactarlos en esos terminos.
+    """
+    if margen < MARGEN_MINIMO:
+        return "debil"
+    if margen >= MARGEN_FUERTE:
+        return "fuerte"
+    return "media"
+
+
+def _mapa_stems(modelo, texto):
+    """Devuelve {raiz: primera palabra del texto que la produjo}.
+
+    Los rasgos del TF-IDF son raices, porque el vectorizador va DESPUES del
+    stemming: en crudo se leen "agu" o "plant tratamient". Reaplicando el
+    normalizador del propio pipeline palabra por palabra se recupera la forma
+    tal como el usuario la escribio, sin reconstruir stemmer ni stopwords.
+    """
+    normalizador = modelo.steps[0][1]
+    mapa = {}
+
+    for palabra in re.findall(r"[^\W\d_]+", texto, flags=re.UNICODE):
+        raiz = normalizador._normalizar(palabra)
+        if raiz and raiz not in mapa:
+            mapa[raiz] = palabra.lower()
+
+    return mapa
+
+
+def terminos_influyentes(modelo, texto, ods, n=6):
+    """Devuelve [(termino, peso)] de los rasgos que mas empujaron hacia ese ODS.
+
+    Solo tiene sentido si el clasificador lee DIRECTAMENTE la matriz TF-IDF, que
+    es el caso de este pipeline (normalizar -> vectorizar -> clasificar): asi
+    cada coeficiente es atribuible a un termino. Si se interpusiera un paso
+    intermedio -un SVD, por ejemplo- los coeficientes dejarian de referirse a
+    terminos, y entonces se devuelve [] para que la interfaz omita la seccion en
+    lugar de mostrar algo que no significa lo que parece.
+
+    Recibe el NUMERO de ODS, no un indice: quien llama no tiene por que saber en
+    que posicion de classes_ cayo cada clase.
+
+    Las raices se reescriben a las palabras del texto via _mapa_stems. El
+    remapeo es aproximado: un bigrama como "plan estudi" puede salir como
+    "plan estudiantes" si "estudiantes" aparecio antes que "estudios" en el
+    texto, porque comparten la raiz.
+    """
+    pasos = getattr(modelo, "steps", None)
+    if pasos is None or len(pasos) < 2:
+        return []
+
+    indice_vec = len(pasos) - 2
+    vectorizador = pasos[indice_vec][1]
+    clf = pasos[-1][1]
+
+    if not hasattr(vectorizador, "vocabulary_") or not hasattr(clf, "coef_"):
+        return []
+
+    coincidencias = np.flatnonzero(np.asarray(modelo.classes_) == ods)
+    if coincidencias.size == 0:
+        return []
+
+    X = modelo[: indice_vec + 1].transform([texto])
+    coeficientes = clf.coef_[int(coincidencias[0])]
+
+    contribuciones = np.asarray(X.multiply(coeficientes).todense()).ravel()
+    nombres = vectorizador.get_feature_names_out()
+    mapa = _mapa_stems(modelo, texto)
+
+    terminos = []
+    for j in np.argsort(contribuciones)[::-1][:n]:
+        if contribuciones[j] <= 0:
+            break
+        palabras = " ".join(mapa.get(r, r) for r in nombres[j].split())
+        terminos.append((palabras, float(contribuciones[j])))
+
+    return terminos

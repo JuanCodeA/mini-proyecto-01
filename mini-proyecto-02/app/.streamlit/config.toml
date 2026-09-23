@@ -1,0 +1,21 @@
+# Tema de la aplicacion.
+#
+# Vive junto al punto de entrada a proposito. Streamlit lee tres config.toml, de
+# menor a mayor precedencia: el global (~/.streamlit), el del directorio de
+# trabajo, y el de la carpeta del script de entrada -este-, que gana a los otros
+# dos. Por eso se aplica sin depender del CWD: igual en local que en Streamlit
+# Community Cloud, que ejecuta desde la raiz del repositorio.
+#
+# Asi el tema es del mini proyecto y no del monorepo, y app/ queda como unidad
+# de despliegue autocontenida, igual que con su requirements.txt.
+
+[theme]
+base = "dark"
+backgroundColor = "#1C1C24"          # --fondo
+secondaryBackgroundColor = "#262630" # --superficie
+textColor = "#F2F2F6"                # --texto
+primaryColor = "#DC2626"             # --rojo: accion primaria, y el foco de los inputs
+font = "sans serif"
+
+[server]
+runOnSave = true
